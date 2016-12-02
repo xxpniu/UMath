@@ -2,6 +2,10 @@
 
 namespace UMath
 {
+    /// <summary>
+    /// quaternion.
+    /// rotation 
+    /// </summary>
     [Serializable]
     public struct UQuaternion
     {

@@ -8,6 +8,9 @@ namespace UMath
     [Serializable]
     public struct UMatrix4x4
     {
+        /// <summary>
+        /// The m11.
+        /// </summary>
         public float m11, m12, m13, m14,
             m21, m22, m23, m24,
             m31, m32, m33, m34,
@@ -50,6 +53,11 @@ namespace UMath
             }
         }
 
+        public void ClearTranslate()
+        {
+            m14 = m24 = m34 = 0;
+        }
+
         public UVector3 Scale
         {
             get
@@ -59,6 +67,24 @@ namespace UMath
                 var z = new UVector3(m13, m23, m33).magnitude;
                 return new UVector3(x, y, z);
             }
+        }
+
+        public void ClearScale()
+        {
+            var x = new UVector3(m11, m21, m31).normalized;
+            var y = new UVector3(m12, m22, m32).normalized;
+            var z = new UVector3(m13, m23, m33).normalized;
+            m11 = x[1];
+            m21 = x[2];
+            m31 = x[3];
+
+            m12 = y[1];
+            m22 = y[2];
+            m32 = y[3];
+
+            m13 = z[1];
+            m23 = z[2];
+            m33 = z[3];
         }
 
         /// <summary>
@@ -423,6 +449,12 @@ namespace UMath
         /// <param name="v">V.</param>
         public static UVector4 operator *(UMatrix4x4 matrix, UVector4 v)
         {
+            if (Math.Abs( v.w)< MathHelper.Epsilon)
+            {
+                matrix.ClearScale();
+            }
+            matrix.ClearTranslate();
+
             var res = UVector4.zero;
             for (var index = 1; index <= 4; index++)
             {
