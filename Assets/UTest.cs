@@ -17,8 +17,12 @@ public class UTest : MonoBehaviour {
     public Vector3 scale = Vector3.one;
 
 
+
     public Quaternion q;
     public UQuaternion mq;
+
+    public Vector3 qToEuler;
+    public UVector3 mqToEuler;
 
     public Quaternion eq;
     public UQuaternion emq;
@@ -38,6 +42,8 @@ public class UTest : MonoBehaviour {
 
         q = Quaternion.AngleAxis(angle, inputVer);
         mq = UQuaternion.AngleAxis(angle, inputUv);
+        qToEuler = q.eulerAngles;
+        mqToEuler = mq.eulerAngles;
 
         eq = Quaternion.Euler(inputVer);
         emq = UQuaternion.Euler(inputUv);

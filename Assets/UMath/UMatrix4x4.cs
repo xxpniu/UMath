@@ -230,7 +230,6 @@ namespace UMath
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
                                
                         }
-                        break;
                     case 2:
                         switch (colnum)
                         {
@@ -246,7 +245,6 @@ namespace UMath
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
 
                         }
-                        break;
                     case 3:
                         switch (colnum)
                         {
@@ -262,7 +260,6 @@ namespace UMath
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
                                
                         }
-                        break;
                     case 4:
                         switch (colnum)
                         {
@@ -278,7 +275,6 @@ namespace UMath
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
 
                         }
-                        break;
                     default:
                         throw new IndexOutOfRangeException("row out of index:" + row);
 
@@ -443,6 +439,18 @@ namespace UMath
             mscale.m22 = scale.y;
             mscale.m33 = scale.z;
             return mTrasn * mRot * mscale;
+        }
+
+        /// <summary>
+        /// Looks at position, target and up.
+        /// </summary>
+        /// <returns>The <see cref="UMath.UMatrix4x4"/>.</returns>
+        /// <param name="position">Position.</param>
+        /// <param name="target">Target.</param>
+        /// <param name="up">Up.</param>
+        public static UMatrix4x4 LookAt(UVector3 position,UVector3 target,UVector3 up)
+        {
+            return identity;
         }
         #endregion
 

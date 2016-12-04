@@ -19,6 +19,11 @@ namespace UMath
             this.w = w;
         }
 
+        public UQuaternion(UVector3 xyz,float w):this(xyz.x,xyz.y,xyz.z,w)
+        {
+            
+        }
+
         #region public 
         /// <summary>
         /// Gets or sets the xyzw.
@@ -94,6 +99,27 @@ namespace UMath
                 0.0f, 0.0f, 0.0f, 1.0f);
         }
         /// <summary>
+        /// Gets the euler angles.
+        /// </summary>
+        /// <value>The euler angles.</value>
+        public UVector3 eulerAngles{
+            get{
+                var ysqr = y * y;
+                var t0 = -2.0f * (ysqr + z * z) + 1.0f;
+                var t1 = -2.0f * (x * y - w * z);
+                var t2 = 2.0f * (x * z + w * y);
+                var t3 = 2.0f * (y * z + w * x);
+                var t4 = -2.0f * (x * x + ysqr) + 1.0f;
+                t2 = t2 > 1.0f ? 1.0f : t2;
+                t2 = t2 < -1.0f ? -1.0f : t2;
+
+                var pitch = (float)Math.Asin(t2)* MathHelper.Rad2Deg;
+                var roll =(float) Math.Atan2(t3, t4)* MathHelper.Rad2Deg;
+                var yaw = (float)Math.Atan2(t1, t0)* MathHelper.Rad2Deg;
+                return new UVector3(roll,pitch,yaw);
+            }
+        }
+        /// <summary>
         /// Tos the angle axis.
         /// </summary>
         /// <param name="angle">Angle.</param>
@@ -138,7 +164,12 @@ namespace UMath
         #region static
 
         public static UQuaternion identity =new  UQuaternion(0,0,0,0);
-
+        /// <summary>
+        /// Angles the axis.
+        /// </summary>
+        /// <returns>The axis.</returns>
+        /// <param name="angle">Angle.</param>
+        /// <param name="axis">Axis.</param>
         public static UQuaternion AngleAxis(float angle,UVector3 axis)
         {
             if (Math.Abs(axis.sqrMagnitude) < MathHelper.Epsilon)
@@ -154,17 +185,35 @@ namespace UMath
 
             return new UQuaternion(x, y, z, w);
         }
-
+        /// <summary>
+        /// Euler the specified x, y and z.
+        /// </summary>
+        /// <param name="x">The x coordinate.</param>
+        /// <param name="y">The y coordinate.</param>
+        /// <param name="z">The z coordinate.</param>
         public static UQuaternion Euler(float x,float y,float z)
         {
             return AngleAxis(x, UVector3.right)
             * AngleAxis(y, UVector3.up)
             * AngleAxis(z, UVector3.forward);
         }
-
+        /// <summary>
+        /// Euler the specified eulerAngles.
+        /// </summary>
+        /// <param name="eulerAngles">Euler angles.</param>
         public static UQuaternion Euler(UVector3 eulerAngles)
         {
             return Euler(eulerAngles.x, eulerAngles.y, eulerAngles.z);
+        }
+
+        /// <summary>
+        /// Normaliz the specified q.
+        /// </summary>
+        /// <param name="q">Q.</param>
+        public static UQuaternion Normalize(UQuaternion q)
+        {
+            q.Normalize();
+            return q;
         }
 
         /// <summary>
@@ -179,7 +228,8 @@ namespace UMath
             left.w+= right.w;
             return left;
         }
-
+        /// <param name="l">L.</param>
+        /// <param name="r">The red component.</param>
         public static UQuaternion operator *(UQuaternion l,UQuaternion r)
         {
             return new UQuaternion(
@@ -272,7 +322,9 @@ namespace UMath
                 blendB = blend;
             }
 
-            var result = new UQuaternion(blendA * q1.Xyz + blendB * q2.Xyz, blendA * q1.w + blendB * q2.w);
+            var result = new UQuaternion(
+                blendA * q1.Xyz + blendB * q2.Xyz, 
+                blendA * q1.w + blendB * q2.w);
             if (result.LengthSquared > 0.0f)
                 return Normalize(result);
             else

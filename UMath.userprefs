@@ -1,0 +1,17 @@
+﻿<Properties StartupItem="Assembly-CSharp.csproj">
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" PreferredExecutionTarget="Unity.Instance.Unity Editor" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/UMath/Mathhelper.cs">
+    <Files>
+      <File FileName="Assets/UMath/Mathhelper.cs" Line="14" Column="50" />
+      <File FileName="Assets/UMath/UVector3.cs" Line="14" Column="23" />
+      <File FileName="Assets/UMath/UVector2.cs" Line="14" Column="9" />
+      <File FileName="Assets/UTest.cs" Line="46" Column="28" />
+      <File FileName="Assets/UMath/UQuaternion.cs" Line="26" Column="9" />
+      <File FileName="Assets/UMath/UVector4.cs" Line="5" Column="19" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches />
+</Properties>
