@@ -38,7 +38,23 @@ namespace UMath
                 w = value.w;
             }
         }
-
+        /// <summary>
+        /// Gets or sets the xyz.
+        /// </summary>
+        /// <value>The xyz.</value>
+        public UVector3 Xyz
+        {
+            set
+            {
+                this.x = value.x;
+                this.y = value.y;
+                this.z = value.z;
+            }
+            get
+            {
+                return new UVector3(x, y, z);
+            }
+        }
         /// <summary>
         /// Inverts the Vector3 component of this Quaternion.
         /// </summary>
@@ -77,8 +93,47 @@ namespace UMath
                 2.0f * (xz - wy), 2.0f * (yz + wx), 1.0f - 2.0f * (x2 + y2), 0.0f,
                 0.0f, 0.0f, 0.0f, 1.0f);
         }
+        /// <summary>
+        /// Tos the angle axis.
+        /// </summary>
+        /// <param name="angle">Angle.</param>
+        /// <param name="axis">Axis.</param>
+        public void ToAngleAxis(out float angle,out UVector3 axis)
+        {
+            axis= this.Xyzw.Xyz.normalized;
+            angle = (float)Math.Acos(w) * 2.0f * MathHelper.Rad2Deg;
+        }
+        /// <summary>
+        /// Gets the square of the quaternion length (magnitude).
+        /// </summary>
+        public float LengthSquared
+        {
+            get
+            {
+                return w * w + Xyz.sqrMagnitude;
+            }
+        }
+        /// <summary>
+        /// Gets the length (magnitude) of the quaternion.
+        /// </summary>
+        /// <seealso cref="LengthSquared"/>
+        public float Length
+        {
+            get
+            {
+                return (float)System.Math.Sqrt(LengthSquared);
+            }
+        }
+        /// <summary>
+        /// Scales the Quaternion to unit length.
+        /// </summary>
+        public void Normalize()
+        {
+            float scale = 1.0f / this.Length;
+            Xyz *= scale;
+            w *= scale;
+        }
         #endregion
-
 
         #region static
 
@@ -112,6 +167,19 @@ namespace UMath
             return Euler(eulerAngles.x, eulerAngles.y, eulerAngles.z);
         }
 
+        /// <summary>
+        /// Adds two instances.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns>The result of the calculation.</returns>
+        public static UQuaternion operator +(UQuaternion left, UQuaternion right)
+        {
+            left.Xyz += right.Xyz;
+            left.w+= right.w;
+            return left;
+        }
+
         public static UQuaternion operator *(UQuaternion l,UQuaternion r)
         {
             return new UQuaternion(
@@ -120,7 +188,96 @@ namespace UMath
                 l.w * r.z + l.z * r.w + l.x * r.y - l.y * r.x,
                 l.w * r.w - l.x * r.x - l.y * r.y - l.z * r.z);
         }
+
+        /// <summary>
+        /// Multiplies an instance by a scalar.
+        /// </summary>
+        /// <param name="quaternion">The instance.</param>
+        /// <param name="scale">The scalar.</param>
+        /// <returns>A new instance containing the result of the calculation.</returns>
+        public static UQuaternion operator *(UQuaternion quaternion, float scale)
+        {
+            return scale * quaternion;
+        }
+
+        /// <summary>
+        /// Multiplies an instance by a scalar.
+        /// </summary>
+        /// <param name="quaternion">The instance.</param>
+        /// <param name="scale">The scalar.</param>
+        /// <returns>A new instance containing the result of the calculation.</returns>
+        public static UQuaternion operator *(float scale, UQuaternion quaternion)
+        {
+            return new UQuaternion(
+                quaternion.x * scale, 
+                quaternion.y * scale, 
+                quaternion.z * scale, 
+                quaternion.w * scale);
+        }
             
+
+        /// <summary>
+        /// Do Spherical linear interpolation between two quaternions 
+        /// </summary>
+        /// <param name="q1">The first quaternion</param>
+        /// <param name="q2">The second quaternion</param>
+        /// <param name="blend">The blend factor</param>
+        /// <returns>A smooth blend between the given quaternions</returns>
+        public static UQuaternion Slerp(UQuaternion q1, UQuaternion q2, float blend)
+        {
+            // if either input is zero, return the other.
+            if (q1.LengthSquared == 0.0f)
+            {
+                if (q2.LengthSquared == 0.0f)
+                {
+                    return identity;
+                }
+                return q2;
+            }
+            else if (q2.LengthSquared == 0.0f)
+            {
+                return q1;
+            }
+
+
+            float cosHalfAngle = q1.w * q2.w + UVector3.Dot(q1.Xyz, q2.Xyz);
+
+            if (cosHalfAngle >= 1.0f || cosHalfAngle <= -1.0f)
+            {
+                // angle = 0.0f, so just return one input.
+                return q1;
+            }
+            else if (cosHalfAngle < 0.0f)
+            {
+                q2.Xyz = -q2.Xyz;
+                q2.w = -q2.w;
+                cosHalfAngle = -cosHalfAngle;
+            }
+
+            float blendA;
+            float blendB;
+            if (cosHalfAngle < 0.99f)
+            {
+                // do proper slerp for big angles
+                float halfAngle = (float)System.Math.Acos(cosHalfAngle);
+                float sinHalfAngle = (float)System.Math.Sin(halfAngle);
+                float oneOverSinHalfAngle = 1.0f / sinHalfAngle;
+                blendA = (float)System.Math.Sin(halfAngle * (1.0f - blend)) * oneOverSinHalfAngle;
+                blendB = (float)System.Math.Sin(halfAngle * blend) * oneOverSinHalfAngle;
+            }
+            else
+            {
+                // do lerp if angle is really small.
+                blendA = 1.0f - blend;
+                blendB = blend;
+            }
+
+            var result = new UQuaternion(blendA * q1.Xyz + blendB * q2.Xyz, blendA * q1.w + blendB * q2.w);
+            if (result.LengthSquared > 0.0f)
+                return Normalize(result);
+            else
+                return identity;
+        }
         #endregion
        
     }

@@ -45,6 +45,10 @@ namespace UMath
 
         #region public 
 
+        /// <summary>
+        /// Gets the translate.
+        /// </summary>
+        /// <value>The translate.</value>
         public UVector3 Translate
         {
             get
@@ -52,12 +56,17 @@ namespace UMath
                 return new UVector3(m14, m24, m34);
             }
         }
-
+        /// <summary>
+        /// Clears the translate.
+        /// </summary>
         public void ClearTranslate()
         {
             m14 = m24 = m34 = 0;
         }
-
+        /// <summary>
+        /// Gets the scale.
+        /// </summary>
+        /// <value>The scale.</value>
         public UVector3 Scale
         {
             get
@@ -68,7 +77,9 @@ namespace UMath
                 return new UVector3(x, y, z);
             }
         }
-
+        /// <summary>
+        /// Clears the scale.
+        /// </summary>
         public void ClearScale()
         {
             var x = new UVector3(m11, m21, m31).normalized;
@@ -86,7 +97,21 @@ namespace UMath
             m23 = z[2];
             m33 = z[3];
         }
-
+        /// <summary>
+        /// Gets the rotation.
+        /// </summary>
+        /// <value>The rotation.</value>
+        public UQuaternion Rotation
+        {
+            get{ return UQuaternion.identity; }
+        }
+        /// <summary>
+        /// Clears the rotation.
+        /// </summary>
+        public void ClearRotation()
+        {
+            
+        }
         /// <summary>
         /// Gets or sets the <see cref="UMath.UMatrix4x4"/> with the specified row colnum.
         /// </summary>
@@ -116,7 +141,6 @@ namespace UMath
                                 break;
                             default:
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
-                                break;
                         }
                         break;
                     case 2:
@@ -136,7 +160,7 @@ namespace UMath
                                 break;
                             default:
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
-                                break;
+             
                         }
                         break;
                     case 3:
@@ -156,7 +180,6 @@ namespace UMath
                                 break;
                             default:
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
-                                break;
                         }
                         break;
                     case 4:
@@ -176,12 +199,10 @@ namespace UMath
                                 break;
                             default:
                                 throw new IndexOutOfRangeException("colnum out of index:" + colnum);
-                                break;
                         }
                         break;
                     default:
                         throw new IndexOutOfRangeException("row out of index:" + row);
-                        break;
                 }
                 #endregion
             }
