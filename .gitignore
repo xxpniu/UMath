@@ -7,8 +7,8 @@ client/*.csproj
 .metadata
 bin/
 tmp/
-client/Library/
-client/Temp/
+Library/
+Temp/
 obj/
 *.tmp
 *.bak
