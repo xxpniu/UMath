@@ -330,7 +330,7 @@ namespace UMath
         /// Invert the specified mat.
         /// </summary>
         /// <param name="mat">Mat.</param>
-        public UMatrix4x4 Invert( UMatrix4x4 mat)
+        public UMatrix4x4 Inverted()
         {
             var result = UMatrix4x4.zero;
             int[] colIdx = { 0, 0, 0, 0 };
