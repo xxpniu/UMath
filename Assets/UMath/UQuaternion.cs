@@ -69,6 +69,19 @@ namespace UMath
             y = -y;
             z = -z;
         }
+
+        /// <summary>
+        /// Inverts the Vector3 component of this Quaternion.
+        /// </summary>
+        public UQuaternion conjugated
+        {
+            get
+            {
+                var q = this;
+                q.Conjugate();
+                return q;
+            }
+        }
         /// <summary>
         /// Invert this instance.
         /// </summary>
@@ -107,7 +120,7 @@ namespace UMath
             get
             {
                 var n = this;
-                //n.Normalize();
+                n.Normalize();
                 var ysqr = n.y * n.y;
                 var t0 = -2.0f * (ysqr + n.z * n.z) + 1.0f;
                 var t1 = -2.0f * (n.x * n.y - n.w * n.z);
@@ -355,8 +368,21 @@ namespace UMath
                 quaternion.y * scale, 
                 quaternion.z * scale, 
                 quaternion.w * scale);
-        }
+             }
             
+        /// <param name="q">Q.</param>
+        /// <param name="v">V.</param>
+        public static UVector3 operator *(UQuaternion q, UVector3 v)
+        {
+            var n = v;
+            UQuaternion vecq =identity, resQ =identity;
+            vecq.Xyz = n;
+            vecq.w = 1;
+            resQ = vecq * q.conjugated;
+            resQ = q * resQ;
+            return new UVector3(resQ.x, resQ.y, resQ.z);
+
+        }
 
         #endregion
        

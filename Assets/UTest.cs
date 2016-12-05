@@ -38,6 +38,13 @@ public class UTest : MonoBehaviour {
 
     public Quaternion lookat;
     public UQuaternion mlookat;
+    public UVector3 mforwardLookat;
+    public Vector3 forwardLookat;
+
+    public UVector3 mangle;
+    public Vector3 rangle;
+    public Matrix4x4 lookatMat;
+    public UMatrix4x4 mlookatMat;
 
 	
 	// Update is called once per frame
@@ -66,5 +73,14 @@ public class UTest : MonoBehaviour {
 
         lookat = Quaternion.LookRotation(inputVer);
         mlookat = UQuaternion.LookRotation(inputUv);
+
+        mforwardLookat = mlookat*UVector3.forward  ;
+        forwardLookat = lookat*Vector3.forward ;
+
+        mangle = UQuaternion.LookRotation(inputUv).eulerAngles;
+        rangle = Quaternion.LookRotation(inputVer).eulerAngles;
+
+
+        mlookatMat = UMatrix4x4.LookAt(UVector3.zero, inputUv,UVector3.up);
 	}
 }

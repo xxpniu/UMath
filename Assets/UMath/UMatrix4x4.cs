@@ -129,6 +129,8 @@ namespace UMath
             get
             { 
                 var m = this;
+                m.ClearScale();
+                m.ClearTranslate();
                 var q = new UQuaternion();
                 q.w = (float)Math.Sqrt( Math.Max( 0, 1 + m[1,1] + m[2,2] + m[3,3] ) ) / 2; 
                 q.x = (float)Math.Sqrt( Math.Max( 0, 1 + m[1,1] - m[2,2] - m[3,3] ) ) / 2; 
@@ -520,14 +522,16 @@ namespace UMath
         /// <param name="up">Up.</param>
         public static UMatrix4x4 LookAt(UVector3 eye,UVector3 target,UVector3 up)
         {
-            var w = target - eye;
+            var w = (target-eye);
             w.Normalized();
             var u = UVector3.Cross(up, w);
             u.Normalized();
             var v = UVector3.Cross(w, u);
-
+            v.Normalized();
             var trans = CreateTranslate(-eye);
-            var m = new UMatrix4x4(u.x, v.x, w.x, 0,
+
+            var m = new UMatrix4x4(
+                        u.x, v.x, w.x, 0,
                         u.y, v.y, w.y, 0,
                         u.z, v.z, w.z, 0,
                         0, 0, 0, 1);
