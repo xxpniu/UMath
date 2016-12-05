@@ -2,6 +2,9 @@
 
 namespace UMath
 {
+    /// <summary>
+    /// transform.
+    /// </summary>
     [Serializable]
     public class UTransform
     {
@@ -10,6 +13,7 @@ namespace UMath
             
         }
 
+        #region fields
         private UVector3 _localPos = UVector3.zero;
         private UQuaternion _localRot = UQuaternion.LookRotation(UVector3.forward);
         private UVector3 _localScale =  UVector3.one;
@@ -18,7 +22,9 @@ namespace UMath
 
         private UMatrix4x4 _matrix;
         private UMatrix4x4 _invmatrix;
+        #endregion
 
+        #region private
         private void Refresh()
         {
             if (!isdrity)
@@ -43,6 +49,24 @@ namespace UMath
                 Refresh();
                 return _invmatrix;
             }
+        }
+        #endregion
+
+        #region public 
+        public void setParent(UTransform parent,bool stayWorld= false)
+        {
+            var pos = this.position;
+            var rot = this.rotation;
+            var scale = this.scale;
+
+            this._parent = parent;
+            if (stayWorld)
+            {
+                this.position = pos;
+                this.rotation = rot;
+                this.scale = scale;
+            }
+
         }
 
         /// <summary>
@@ -148,13 +172,27 @@ namespace UMath
         {
             set
             {
-                var r = worldToLocalMatrix * value;
+                var r = worldToLocalMatrix.Rotation * value;
+                localRotation = r;
             }
 
             get
             {
                 return (localToWorldMatrix * Matrix).Rotation;
             }
+        }
+
+        /// <summary>
+        /// Gets or sets the scale.
+        /// </summary>
+        /// <value>The scale.</value>
+        public UVector3 scale
+        {
+            set
+            {
+                localScale = worldToLocalMatrix.Scale; 
+            }
+            get{ return UVector3.one; }
         }
 
         /// <summary>
@@ -166,6 +204,8 @@ namespace UMath
             set{ var rot = UQuaternion.LookRotation(value); this.rotation = rot; }
             get{ return UVector3.forward * rotation; }
         }
+
+        #endregion
     }
 }
 

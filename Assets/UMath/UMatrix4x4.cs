@@ -368,7 +368,7 @@ namespace UMath
                             }
                             else if (pivotIdx[k] > 0)
                             {
-                                result = mat;
+                                result = this;
                                 return result;
                             }
                         }

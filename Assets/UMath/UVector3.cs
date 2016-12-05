@@ -15,6 +15,12 @@ namespace UMath
         public float x,y,z;
         #endregion
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UMath.UVector3"/> struct.
+        /// </summary>
+        /// <param name="x">The x coordinate.</param>
+        /// <param name="y">The y coordinate.</param>
+        /// <param name="z">The z coordinate.</param>
         public UVector3(float x,float y,float z)
         {
             this.x = x;

@@ -72,7 +72,8 @@ namespace UMath
         /// Gets the sqr magnitude.
         /// </summary>
         /// <value>The sqr magnitude.</value>
-        public float sqrMagnitude{
+        public float sqrMagnitude
+        {
             get{ return x* x + y * y + z * z + w * w; }
         }
         /// <summary>
@@ -81,7 +82,8 @@ namespace UMath
         /// <value>The magnitude.</value>
         public float magnitude
         {
-            get{
+            get
+            {
                 return (float)Math.Sqrt(sqrMagnitude);
             }
         }
@@ -107,6 +109,8 @@ namespace UMath
 
         #endregion
 
+        #region Static 
+
         public static UVector4 zero = new UVector4(0,0,0,0);
 
         public static UVector4 Normalize(UVector4 vec)
@@ -121,6 +125,7 @@ namespace UMath
             return vec;
         }
 
+        #endregion
     }
 }
 
