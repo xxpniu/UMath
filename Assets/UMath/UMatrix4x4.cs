@@ -46,6 +46,29 @@ namespace UMath
         #region public 
 
         /// <summary>
+        /// Gets the determinant of this matrix.
+        /// </summary>
+        public float Determinant
+        {
+            get
+            {
+                float m11 = this[1,1], m12 = this[1,2], m13 =this[1,3], m14 = this[1,4],
+                m21 = this[2,1], m22 = this[2,2], m23 =this[2,3], m24 =this[2,4],
+                m31 = this[3,1], m32 = this[3,2], m33 = this[3,3], m34 = this[3,4],
+                m41 = this[4,1], m42 = this[4,2], m43 = this[4,3], m44 = this[4,4];
+
+                return
+                    m11 * m22 * m33 * m44 - m11 * m22 * m34 * m43 + m11 * m23 * m34 * m42 - m11 * m23 * m32 * m44
+                    + m11 * m24 * m32 * m43 - m11 * m24 * m33 * m42 - m12 * m23 * m34 * m41 + m12 * m23 * m31 * m44
+                    - m12 * m24 * m31 * m43 + m12 * m24 * m33 * m41 - m12 * m21 * m33 * m44 + m12 * m21 * m34 * m43
+                    + m13 * m24 * m31 * m42 - m13 * m24 * m32 * m41 + m13 * m21 * m32 * m44 - m13 * m21 * m34 * m42
+                    + m13 * m22 * m34 * m41 - m13 * m22 * m31 * m44 - m14 * m21 * m32 * m43 + m14 * m21 * m33 * m42
+                    - m14 * m22 * m33 * m41 + m14 * m22 * m31 * m43 - m14 * m23 * m31 * m42 + m14 * m23 * m32 * m41;
+            }
+        }
+           
+
+        /// <summary>
         /// Gets the translate.
         /// </summary>
         /// <value>The translate.</value>
@@ -103,21 +126,40 @@ namespace UMath
         /// <value>The rotation.</value>
         public UQuaternion Rotation
         {
-            get{ return UQuaternion.identity; }
+            get
+            { 
+                var m = this;
+                var q = new UQuaternion();
+                q.w = (float)Math.Sqrt( Math.Max( 0, 1 + m[1,1] + m[2,2] + m[3,3] ) ) / 2; 
+                q.x = (float)Math.Sqrt( Math.Max( 0, 1 + m[1,1] - m[2,2] - m[3,3] ) ) / 2; 
+                q.y = (float)Math.Sqrt( Math.Max( 0, 1 - m[1,1] + m[2,2] - m[3,3] ) ) / 2; 
+                q.z = (float)Math.Sqrt( Math.Max( 0, 1 - m[1,1] - m[2,2] + m[3,3] ) ) / 2; 
+                q.x *= (float)Math.Sign( q.x * ( m[3,2] - m[2,3] ) );
+                q.y *= (float)Math.Sign( q.y * ( m[1,3] - m[3,1] ) );
+                q.z *= (float)Math.Sign( q.z * ( m[2,1] - m[1,2] ) );
+                q.Normalize();
+                return q;
+            }
         }
         /// <summary>
         /// Clears the rotation.
         /// </summary>
         public void ClearRotation()
         {
-            
+            var scale = this.Scale;
+            this[1, 1] = this[1, 2] = this[1, 3] =
+                this[2, 1] = this[2, 2] = this[2, 3] =
+                    this[3, 1] = this[3, 2] = this[3, 3] = 0;
+            this[1, 1] = scale.x;
+            this[2, 2] = scale.y;
+            this[3, 3] = scale.z;
         }
         /// <summary>
-        /// Gets or sets the <see cref="UMath.UMatrix4x4"/> with the specified row colnum.
+        /// Gets or sets the <see cref="UMath.UMatrix4x4"/> with the specified row column.
         /// </summary>
         /// <param name="row">Row.</param>
-        /// <param name="colnum">Colnum.</param>
-        public float this [int row, int colnum]
+        /// <param name="column">column.</param>
+        public float this [int row, int column]
         {
             set
             {
@@ -125,7 +167,7 @@ namespace UMath
                 switch (row)
                 {
                     case 1:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 m11 = value;
@@ -140,11 +182,11 @@ namespace UMath
                                 m14 = value;
                                 break;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
                         }
                         break;
                     case 2:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 m21 = value;
@@ -159,12 +201,12 @@ namespace UMath
                                 m24 = value;
                                 break;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
              
                         }
                         break;
                     case 3:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 m31 = value;
@@ -179,11 +221,11 @@ namespace UMath
                                 m34 = value;
                                 break;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
                         }
                         break;
                     case 4:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 m41 = value;
@@ -198,7 +240,7 @@ namespace UMath
                                 m44 = value;
                                 break;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
                         }
                         break;
                     default:
@@ -213,7 +255,7 @@ namespace UMath
                 switch (row)
                 {
                     case 1:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 return  m11;
@@ -227,11 +269,11 @@ namespace UMath
                             case 4:
                                 return m14;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
                                
                         }
                     case 2:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 return m21;
@@ -242,11 +284,11 @@ namespace UMath
                             case 4:
                                 return m24;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
 
                         }
                     case 3:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 return m31;
@@ -257,11 +299,11 @@ namespace UMath
                             case 4:
                                 return m34;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
                                
                         }
                     case 4:
-                        switch (colnum)
+                        switch (column)
                         {
                             case 1:
                                 return  m41;
@@ -272,7 +314,7 @@ namespace UMath
                             case 4:
                                 return m44;
                             default:
-                                throw new IndexOutOfRangeException("colnum out of index:" + colnum);
+                                throw new IndexOutOfRangeException("column out of index:" + column);
 
                         }
                     default:
@@ -429,28 +471,81 @@ namespace UMath
         /// <param name="scale">Scale.</param>
         public static UMatrix4x4 TRS(UVector3 trans,UQuaternion rot, UVector3 scale)
         {
+            return CreateTranslate(trans) * CreateRotation(rot) * CreateScale(scale);
+        }
+
+        /// <summary>
+        /// Creates the translate.
+        /// </summary>
+        /// <returns>The translate.</returns>
+        /// <param name="trans">Trans.</param>
+        public static UMatrix4x4 CreateTranslate(UVector3 trans)
+        {
             var mTrasn = identity;
             mTrasn.m14 = trans.x;
             mTrasn.m24 = trans.y;
             mTrasn.m34 = trans.z;
-            var mRot = rot.ToMartix();
+            return mTrasn;
+        }
+        /// <summary>
+        /// Creates the rotation.
+        /// </summary>
+        /// <returns>The rotation.</returns>
+        /// <param name="rot">Rot.</param>
+        public static UMatrix4x4 CreateRotation(UQuaternion rot)
+        {
+            return rot.ToMartix();
+        }
+
+        /// <summary>
+        /// Creates the scale.
+        /// </summary>
+        /// <returns>The scale.</returns>
+        /// <param name="scale">Scale.</param>
+        public static UMatrix4x4 CreateScale(UVector3 scale)
+        {
             var mscale = identity;
             mscale.m11 = scale.x;
             mscale.m22 = scale.y;
             mscale.m33 = scale.z;
-            return mTrasn * mRot * mscale;
+            return mscale;
         }
 
         /// <summary>
         /// Looks at position, target and up.
         /// </summary>
         /// <returns>The <see cref="UMath.UMatrix4x4"/>.</returns>
-        /// <param name="position">Position.</param>
+        /// <param name="eye">Position.</param>
         /// <param name="target">Target.</param>
         /// <param name="up">Up.</param>
-        public static UMatrix4x4 LookAt(UVector3 position,UVector3 target,UVector3 up)
+        public static UMatrix4x4 LookAt(UVector3 eye,UVector3 target,UVector3 up)
         {
-            return identity;
+            var w = target - eye;
+            w.Normalized();
+            var u = UVector3.Cross(up, w);
+            u.Normalized();
+            var v = UVector3.Cross(w, u);
+
+            var trans = CreateTranslate(-eye);
+            var m = new UMatrix4x4(u.x, v.x, w.x, 0,
+                        u.y, v.y, w.y, 0,
+                        u.z, v.z, w.z, 0,
+                        0, 0, 0, 1);
+            return trans * m;
+        }
+
+        /// <summary>
+        /// Decompose the specified m, trans, rotation and scale.
+        /// </summary>
+        /// <param name="m">M.</param>
+        /// <param name="trans">Trans.</param>
+        /// <param name="rotation">Rotation.</param>
+        /// <param name="scale">Scale.</param>
+        public static void Decompose(UMatrix4x4 m, out UVector3 trans,out UQuaternion rotation, out UVector3 scale)
+        {
+            trans = m.Translate;
+            rotation = m.Rotation;
+            scale = m.Scale;
         }
         #endregion
 
@@ -463,11 +558,11 @@ namespace UMath
             var result = zero;
             for (int row = 1; row <= 4; row++)
             {
-                for (var colnum = 1; colnum <= 4; colnum++)
+                for (var column = 1; column <= 4; column++)
                 {
                     for (var k = 1; k <= 4; k++)
                     {
-                        result[row, colnum] += left[row, k] * right[k, colnum];
+                        result[row, column] += left[row, k] * right[k, column];
                     }
                 }
             }

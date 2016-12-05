@@ -102,21 +102,25 @@ namespace UMath
         /// Gets the euler angles.
         /// </summary>
         /// <value>The euler angles.</value>
-        public UVector3 eulerAngles{
-            get{
-                var ysqr = y * y;
-                var t0 = -2.0f * (ysqr + z * z) + 1.0f;
-                var t1 = -2.0f * (x * y - w * z);
-                var t2 = 2.0f * (x * z + w * y);
-                var t3 = 2.0f * (y * z + w * x);
-                var t4 = -2.0f * (x * x + ysqr) + 1.0f;
+        public UVector3 eulerAngles
+        {
+            get
+            {
+                var n = this;
+                //n.Normalize();
+                var ysqr = n.y * n.y;
+                var t0 = -2.0f * (ysqr + n.z * n.z) + 1.0f;
+                var t1 = -2.0f * (n.x * n.y - n.w * n.z);
+                var t2 = 2.0f * (n.x * n.z + n.w * n.y);
+                var t3 = -2.0f * (n.y * n.z - n.w * n.x);
+                var t4 = -2.0f * (n.x * n.x + ysqr) + 1.0f;
                 t2 = t2 > 1.0f ? 1.0f : t2;
                 t2 = t2 < -1.0f ? -1.0f : t2;
 
-                var pitch = (float)Math.Asin(t2)* MathHelper.Rad2Deg;
-                var roll =(float) Math.Atan2(t3, t4)* MathHelper.Rad2Deg;
-                var yaw = (float)Math.Atan2(t1, t0)* MathHelper.Rad2Deg;
-                return new UVector3(roll,pitch,yaw);
+                var pitch = MathHelper.AngleFormat((float)Math.Asin(t2) * MathHelper.Rad2Deg);
+                var roll = MathHelper.AngleFormat((float)Math.Atan2(t3, t4) * MathHelper.Rad2Deg);
+                var yaw = MathHelper.AngleFormat((float)Math.Atan2(t1, t0) * MathHelper.Rad2Deg);
+                return new UVector3(roll, pitch, yaw);
             }
         }
         /// <summary>
@@ -126,7 +130,7 @@ namespace UMath
         /// <param name="axis">Axis.</param>
         public void ToAngleAxis(out float angle,out UVector3 axis)
         {
-            axis= this.Xyzw.Xyz.normalized;
+            axis= this.Xyz.normalized;
             angle = (float)Math.Acos(w) * 2.0f * MathHelper.Rad2Deg;
         }
         /// <summary>
@@ -162,7 +166,9 @@ namespace UMath
         #endregion
 
         #region static
-
+        /// <summary>
+        /// The identity (0,0,0,0).
+        /// </summary>
         public static UQuaternion identity =new  UQuaternion(0,0,0,0);
         /// <summary>
         /// Angles the axis.
@@ -215,56 +221,6 @@ namespace UMath
             q.Normalize();
             return q;
         }
-
-        /// <summary>
-        /// Adds two instances.
-        /// </summary>
-        /// <param name="left">The first instance.</param>
-        /// <param name="right">The second instance.</param>
-        /// <returns>The result of the calculation.</returns>
-        public static UQuaternion operator +(UQuaternion left, UQuaternion right)
-        {
-            left.Xyz += right.Xyz;
-            left.w+= right.w;
-            return left;
-        }
-        /// <param name="l">L.</param>
-        /// <param name="r">The red component.</param>
-        public static UQuaternion operator *(UQuaternion l,UQuaternion r)
-        {
-            return new UQuaternion(
-                l.w * r.x + l.x * r.w + l.y * r.z - l.z * r.y,
-                l.w * r.y + l.y * r.w + l.z * r.x - l.x * r.z,
-                l.w * r.z + l.z * r.w + l.x * r.y - l.y * r.x,
-                l.w * r.w - l.x * r.x - l.y * r.y - l.z * r.z);
-        }
-
-        /// <summary>
-        /// Multiplies an instance by a scalar.
-        /// </summary>
-        /// <param name="quaternion">The instance.</param>
-        /// <param name="scale">The scalar.</param>
-        /// <returns>A new instance containing the result of the calculation.</returns>
-        public static UQuaternion operator *(UQuaternion quaternion, float scale)
-        {
-            return scale * quaternion;
-        }
-
-        /// <summary>
-        /// Multiplies an instance by a scalar.
-        /// </summary>
-        /// <param name="quaternion">The instance.</param>
-        /// <param name="scale">The scalar.</param>
-        /// <returns>A new instance containing the result of the calculation.</returns>
-        public static UQuaternion operator *(float scale, UQuaternion quaternion)
-        {
-            return new UQuaternion(
-                quaternion.x * scale, 
-                quaternion.y * scale, 
-                quaternion.z * scale, 
-                quaternion.w * scale);
-        }
-            
 
         /// <summary>
         /// Do Spherical linear interpolation between two quaternions 
@@ -330,6 +286,78 @@ namespace UMath
             else
                 return identity;
         }
+        /// <summary>
+        /// Looks the rotation.
+        /// </summary>
+        /// <returns>The rotation.</returns>
+        /// <param name="forward">Forward.</param>
+        /// <param name="up">Up.</param>
+        public static UQuaternion LookRotation(UVector3 forward, UVector3 up)
+        {
+            return UMatrix4x4.LookAt(UVector3.zero, forward, up).Rotation;
+        }
+        /// <summary>
+        /// Looks the rotation.
+        /// </summary>
+        /// <returns>The rotation.</returns>
+        /// <param name="forward">Forward.</param>
+        public static UQuaternion LookRotation(UVector3 forward)
+        {
+            return LookRotation(forward, UVector3.up);
+        }
+        #endregion
+
+        #region operator
+        /// <summary>
+        /// Adds two instances.
+        /// </summary>
+        /// <param name="left">The first instance.</param>
+        /// <param name="right">The second instance.</param>
+        /// <returns>The result of the calculation.</returns>
+        public static UQuaternion operator +(UQuaternion left, UQuaternion right)
+        {
+            left.Xyz += right.Xyz;
+            left.w+= right.w;
+            return left;
+        }
+        /// <param name="l">L.</param>
+        /// <param name="r">The red component.</param>
+        public static UQuaternion operator *(UQuaternion l,UQuaternion r)
+        {
+            return new UQuaternion(
+                l.w * r.x + l.x * r.w + l.y * r.z - l.z * r.y,
+                l.w * r.y + l.y * r.w + l.z * r.x - l.x * r.z,
+                l.w * r.z + l.z * r.w + l.x * r.y - l.y * r.x,
+                l.w * r.w - l.x * r.x - l.y * r.y - l.z * r.z);
+        }
+
+        /// <summary>
+        /// Multiplies an instance by a scalar.
+        /// </summary>
+        /// <param name="quaternion">The instance.</param>
+        /// <param name="scale">The scalar.</param>
+        /// <returns>A new instance containing the result of the calculation.</returns>
+        public static UQuaternion operator *(UQuaternion quaternion, float scale)
+        {
+            return scale * quaternion;
+        }
+
+        /// <summary>
+        /// Multiplies an instance by a scalar.
+        /// </summary>
+        /// <param name="quaternion">The instance.</param>
+        /// <param name="scale">The scalar.</param>
+        /// <returns>A new instance containing the result of the calculation.</returns>
+        public static UQuaternion operator *(float scale, UQuaternion quaternion)
+        {
+            return new UQuaternion(
+                quaternion.x * scale, 
+                quaternion.y * scale, 
+                quaternion.z * scale, 
+                quaternion.w * scale);
+        }
+            
+
         #endregion
        
     }

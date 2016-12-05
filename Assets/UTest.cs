@@ -21,7 +21,9 @@ public class UTest : MonoBehaviour {
     public Quaternion q;
     public UQuaternion mq;
 
+    public Quaternion qEuler;
     public Vector3 qToEuler;
+    public UQuaternion mqEuler;
     public UVector3 mqToEuler;
 
     public Quaternion eq;
@@ -32,6 +34,11 @@ public class UTest : MonoBehaviour {
 
     public UVector3 exTrans;
     public UVector3 exScale;
+    public UQuaternion exRotation;
+
+    public Quaternion lookat;
+    public UQuaternion mlookat;
+
 	
 	// Update is called once per frame
 	void Update () 
@@ -42,8 +49,11 @@ public class UTest : MonoBehaviour {
 
         q = Quaternion.AngleAxis(angle, inputVer);
         mq = UQuaternion.AngleAxis(angle, inputUv);
-        qToEuler = q.eulerAngles;
-        mqToEuler = mq.eulerAngles;
+
+        qEuler = Quaternion.Euler(inputVer);
+        qToEuler = qEuler.eulerAngles;
+        mqEuler = UQuaternion.Euler(inputUv);
+        mqToEuler = mqEuler.eulerAngles;
 
         eq = Quaternion.Euler(inputVer);
         emq = UQuaternion.Euler(inputUv);
@@ -52,6 +62,9 @@ public class UTest : MonoBehaviour {
         mm = UMatrix4x4.TRS(t, mq, s);
         exScale = mm.Scale;
         exTrans = mm.Translate;
+        exRotation = mm.Rotation;
 
+        lookat = Quaternion.LookRotation(inputVer);
+        mlookat = UQuaternion.LookRotation(inputUv);
 	}
 }
