@@ -212,8 +212,9 @@ namespace UMath
         /// <param name="z">The z coordinate.</param>
         public static UQuaternion Euler(float x,float y,float z)
         {
-            return AngleAxis(x, UVector3.right)
-            * AngleAxis(y, UVector3.up)
+            return 
+            AngleAxis(y, UVector3.up)
+            * AngleAxis(x, UVector3.right)
             * AngleAxis(z, UVector3.forward);
         }
         /// <summary>

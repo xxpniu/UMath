@@ -202,7 +202,7 @@ namespace UMath
         public UVector3 forward
         {
             set{ var rot = UQuaternion.LookRotation(value); this.rotation = rot; }
-            get{ return UVector3.forward * rotation; }
+            get{ return rotation*UVector3.forward ; }
         }
 
         #endregion

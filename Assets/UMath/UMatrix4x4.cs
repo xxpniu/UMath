@@ -128,6 +128,50 @@ namespace UMath
         {
             get
             { 
+                var temp = UQuaternion.identity;
+                float n = m11 + m22 + m33;
+                if (n > 0.0f)
+                {
+                    float a = (float)Math.Sqrt(n + 1.0f);
+                    temp.w = a / 2.0f;
+                    a = 0.5f / a;
+                    temp.x = (m32 - m23) * a;
+                    temp.y = (m13 - m31) * a;
+                    temp.z = (m21 - m12) * a;
+                }
+                else if ((m11 >= m22) && (m11 >= m33))
+                {
+                    float a = (float)Math.Sqrt(1.0f + m11 - m22 - m33);
+                    float b = 0.5f / a;
+
+                    temp.x = 0.5f * a;
+                    temp.y = (m21 + m12) * b;
+                    temp.z = (m31 + m13) * b;
+                    temp.w = (m32 - m23) * b;
+                }
+                else if (m22 > m33)
+                {
+                    float a = (float)Math.Sqrt(1.0f + m22 - m11 - m33);
+                    float b = 0.5f / a;
+
+                    temp.x = (m12 + m21) * b;
+                    temp.y = 0.5f * a;
+                    temp.z = (m23 + m32) * b;
+                    temp.w = (m13 - m31) * b;
+                }
+                else
+                {
+                    float a = (float)Math.Sqrt(1.0f + m33 - m11 - m22);
+                    float b = 0.5f / a;
+
+                    temp.x = (m13 + m31) * b;
+                    temp.y = (m23 + m32) * b;
+                    temp.z = 0.5f * a;
+                    temp.w = (m21 - m12) * b;
+                }
+                temp.Normalize();
+                return temp;
+                /*
                 var m = this;
                 m.ClearScale();
                 m.ClearTranslate();
@@ -140,7 +184,7 @@ namespace UMath
                 q.y *= (float)Math.Sign( q.y * ( m[1,3] - m[3,1] ) );
                 q.z *= (float)Math.Sign( q.z * ( m[2,1] - m[1,2] ) );
                 q.Normalize();
-                return q;
+                return q;*/
             }
         }
         /// <summary>
