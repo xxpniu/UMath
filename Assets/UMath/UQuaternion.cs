@@ -182,7 +182,7 @@ namespace UMath
         /// <summary>
         /// The identity (0,0,0,0).
         /// </summary>
-        public static UQuaternion identity =new  UQuaternion(0,0,0,0);
+        public static UQuaternion identity =new  UQuaternion(0,0,0,1);
         /// <summary>
         /// Angles the axis.
         /// </summary>

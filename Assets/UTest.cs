@@ -7,17 +7,22 @@ using UMath;
 public class UTest : MonoBehaviour {
 
 	// Use this for initialization
-	void Start () {
+	void Start () 
+    {
        
 	}
 
+
+
     [Header("Input")]
-    public Vector3 cForward;
     public Vector3 inputVer = Vector3.forward;
     public float angle =0;
     public Vector3 trans;
     public Vector3 scale = Vector3.one;
 
+    [Header("Forward")]
+    public Vector3 cForward;
+    public UVector3 uForward;
 
     [Header("AngleAxis")]
     public Quaternion q;
@@ -56,11 +61,28 @@ public class UTest : MonoBehaviour {
     public float angleDelta =0f;
     public float angleDeltaM =0f;
 
+    [Header("Identity")]
+    public Quaternion id;
+    public UQuaternion idm;
+    public UMatrix4x4 midM;
+    public Matrix4x4 mid;
+
 	
 	// Update is called once per frame
 	void Update () 
     {
+        id = Quaternion.identity;
+        idm = UQuaternion.identity;
+        midM = UMatrix4x4.identity;
+        mid = Matrix4x4.identity;
+
         cForward = this.transform.forward;
+        uForward = new UQuaternion(this.transform.rotation.x,
+            this.transform.rotation.y,
+            this.transform.rotation.z,
+            this.transform.rotation.w) 
+            * UVector3.forward;
+        
         var inputUv = new UVector3(inputVer.x, inputVer.y, inputVer.z);
         var s = new UVector3(scale.x, scale.y, scale.z);
         var t = new UVector3(trans.x, trans.y, trans.z);
