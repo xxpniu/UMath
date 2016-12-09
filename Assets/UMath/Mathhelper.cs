@@ -56,6 +56,18 @@ namespace UMath
                 return 360f - (float)(acos);
 
         }
+           
+        public static float Repeat(float t, float lenght)
+        {
+            return t - (float)Math.Floor(t / lenght) * lenght;
+        }
+
+        public static float MoveTowards(float current,float target, float maxDelta)
+        {
+            if (Math.Abs(target - current) <= maxDelta)
+                return target;
+            return current + Math.Sign(target - current) * maxDelta;
+        }
 
         /// <summary>
         /// Deltas the angle.
@@ -63,10 +75,27 @@ namespace UMath
         /// <returns>The angle.</returns>
         /// <param name="a">The alpha component.</param>
         /// <param name="b">The blue component.</param>
-        public static float DeltaAngle(float a, float b)
+        public static float DeltaAngle(float current, float targt)
         {
-            var r =(AngleFormat(b) - AngleFormat(a)) % 180;
-            return r;
+            float num = Repeat(targt - current, 360f);
+            if (num > 180f)
+            {
+                num -= 360f;
+            }
+            return num;
+        }
+
+        /// <summary>
+        /// Moves the towards angle.
+        /// </summary>
+        /// <returns>The towards angle.</returns>
+        /// <param name="current">Current.</param>
+        /// <param name="target">Target.</param>
+        /// <param name="maxDelta">Max delta.</param>
+        public static float MoveTowardsAngle(float current,float target, float maxDelta)
+        {
+            target = current + DeltaAngle(current, target);
+            return MoveTowards(current, target, maxDelta);
         }
     }
 }

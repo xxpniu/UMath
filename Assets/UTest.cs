@@ -58,6 +58,8 @@ public class UTest : MonoBehaviour {
 
     [Header("Delta Angle")]
     public float angleY = 0f;
+    public float ad;
+    public float adm;
     public float angleDelta =0f;
     public float angleDeltaM =0f;
 
@@ -67,10 +69,18 @@ public class UTest : MonoBehaviour {
     public UMatrix4x4 midM;
     public Matrix4x4 mid;
 
-	
+    private float rotangle =0;
 	// Update is called once per frame
 	void Update () 
     {
+        if (rotangle > 360)
+        {
+            rotangle = 0;
+        }
+        rotangle += Time.deltaTime * 5f;
+
+        this.transform.localRotation = Quaternion.Euler(0, rotangle, 0);
+
         id = Quaternion.identity;
         idm = UQuaternion.identity;
         midM = UMatrix4x4.identity;
@@ -114,9 +124,12 @@ public class UTest : MonoBehaviour {
         mlookatMat = UMatrix4x4.LookAt(UVector3.zero, inputUv,UVector3.up);
         lookatMat = Matrix4x4.zero;//need
 
+        var v = this.transform.forward;
+        angleY = MathHelper.CalAngleWithAxisY(new UVector3(v.x,v.y,v.z));
+        adm = MathHelper.DeltaAngle(angleY, angle);
+        ad = Mathf.DeltaAngle(angleY, angle);
+        angleDeltaM = MathHelper.MoveTowardsAngle(angleY,angle, adm*Time.deltaTime);
+        angleDelta =  Mathf.MoveTowardsAngle(angleY,angle, ad*Time.deltaTime);
 
-        angleY = MathHelper.CalAngleWithAxisY(inputUv);
-        angleDeltaM = MathHelper.DeltaAngle(angleY, angle);
-        angleDelta = Mathf.DeltaAngle(angleY, angle);
 	}
 }
