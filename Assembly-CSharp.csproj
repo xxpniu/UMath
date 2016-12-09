@@ -46,6 +46,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Extands.cs" />
      <Compile Include="Assets\UMath\Mathhelper.cs" />
      <Compile Include="Assets\UMath\UMatrix4x4.cs" />
      <Compile Include="Assets\UMath\UQuaternion.cs" />

@@ -580,15 +580,14 @@ namespace UMath
             if (Math.Abs( v.w)< MathHelper.Epsilon)
             {
                 matrix.ClearScale();
+                matrix.ClearTranslate();
             }
-            matrix.ClearTranslate();
-
             var res = UVector4.zero;
             for (var index = 1; index <= 4; index++)
             {
                 for (var k = 1; k <= 4; k++)
                 {
-                    res[index] += v[k] * matrix[k, index];
+                    res[index] += v[k] * matrix[index, k];
                 }
             }
             return res;

@@ -205,6 +205,26 @@ namespace UMath
             get{ return rotation*UVector3.forward ; }
         }
 
+        /// <summary>
+        /// Transforms the direction.
+        /// </summary>
+        /// <returns>The direction.</returns>
+        /// <param name="dir">Dir.</param>
+        public UVector3 TransformDirection(UVector3 dir)
+        {
+            return (localToWorldMatrix * Matrix * new UVector4(dir, 0)).Xyz;
+        }
+        /// <summary>
+        /// Transforms the point.
+        /// </summary>
+        /// <returns>The point.</returns>
+        /// <param name="point">Point.</param>
+
+        public UVector3 TransformPoint(UVector3 point)
+        {
+            return (localToWorldMatrix * Matrix * new UVector4(point, 1)).Xyz;
+        }
+
         #endregion
     }
 }

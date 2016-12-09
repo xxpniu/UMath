@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UMath;
+using Extands;
 
 [ExecuteInEditMode]
 public class UTest : MonoBehaviour {
@@ -69,7 +70,15 @@ public class UTest : MonoBehaviour {
     public UMatrix4x4 midM;
     public Matrix4x4 mid;
 
+    private UTransform mparent = new UTransform();
+    private UTransform  mtransfrom = new UTransform();
     private float rotangle =0;
+
+    [Header("Transform")]
+    public UVector3 dirU;
+    public Vector3 dir;
+    public UVector3 pointU;
+    public Vector3 point;
 	// Update is called once per frame
 	void Update () 
     {
@@ -79,6 +88,7 @@ public class UTest : MonoBehaviour {
         }
         rotangle += Time.deltaTime * 5f;
 
+        this.mtransfrom.setParent(mparent);
         this.transform.localRotation = Quaternion.Euler(0, rotangle, 0);
 
         id = Quaternion.identity;
@@ -131,5 +141,19 @@ public class UTest : MonoBehaviour {
         angleDeltaM = MathHelper.MoveTowardsAngle(angleY,angle, adm*Time.deltaTime);
         angleDelta =  Mathf.MoveTowardsAngle(angleY,angle, ad*Time.deltaTime);
 
+
+        this.mparent.localPosition = this.transform.parent.localPosition.ToUV3();
+        this.mparent.localRotation = this.transform.parent.localRotation.ToUQ();
+        this.mparent.localScale = this.transform.parent.localScale.ToUV3();
+
+        this.mtransfrom.localPosition = this.transform.localPosition.ToUV3();
+        this.mtransfrom.localRotation = this.transform.localRotation.ToUQ();
+        this.mtransfrom.localScale = this.transform.localScale.ToUV3();
+
+        dir= this.transform.TransformDirection(Vector3.forward);
+        dirU = mtransfrom.TransformDirection(UVector3.forward);
+
+        point = transform.TransformPoint(Vector3.forward);
+        pointU = mtransfrom.TransformPoint(UVector3.forward);
 	}
 }
