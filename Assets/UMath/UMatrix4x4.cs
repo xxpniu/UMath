@@ -128,17 +128,41 @@ namespace UMath
         {
             get
             { 
-                var m = this;
-                m.ClearScale();
-                m.ClearTranslate();
                 var q = new UQuaternion();
-                q.w = (float)Math.Sqrt( Math.Max( 0, 1 + m[1,1] + m[2,2] + m[3,3] ) ) / 2; 
-                q.x = (float)Math.Sqrt( Math.Max( 0, 1 + m[1,1] - m[2,2] - m[3,3] ) ) / 2; 
-                q.y = (float)Math.Sqrt( Math.Max( 0, 1 - m[1,1] + m[2,2] - m[3,3] ) ) / 2; 
-                q.z = (float)Math.Sqrt( Math.Max( 0, 1 - m[1,1] - m[2,2] + m[3,3] ) ) / 2; 
-                q.x *= (float)Math.Sign( q.x * ( m[3,2] - m[2,3] ) );
-                q.y *= (float)Math.Sign( q.y * ( m[1,3] - m[3,1] ) );
-                q.z *= (float)Math.Sign( q.z * ( m[2,1] - m[1,2] ) );
+                float tr = m11 + m22 + m33;
+
+                if (tr > MathHelper.Epsilon)
+                { 
+                    float S = (float)Math.Sqrt(tr + 1.0f) * 2f; // S=4*qw 
+                    q.w = 0.25f * S;
+                    q.x = (m32 - m23) / S;
+                    q.y = (m13 - m31) / S; 
+                    q.z = (m21 - m12) / S; 
+                }
+                else if ((m11 > m22) && (m11 > m33))
+                { 
+                    float S = (float)Math.Sqrt(1.0 + m11 - m22 - m33) * 2; // S=4*qx 
+                    q.w = (m32 - m23) / S;
+                    q.x = 0.25f * S;
+                    q.y = (m12 + m21) / S; 
+                    q.z = (m13 + m31) / S; 
+                }
+                else if (m22 > m33)
+                { 
+                    float S = (float)Math.Sqrt(1.0 + m22 - m11 - m33) * 2; // S=4*qy
+                    q.w = (m13 - m31) / S;
+                    q.x = (m12 + m21) / S; 
+                    q.y = 0.25f * S;
+                    q.z = (m23 + m32) / S; 
+                }
+                else
+                { 
+                    float S = (float)Math.Sqrt(1.0 + m33 - m11 - m22) * 2; // S=4*qz
+                    q.w = (m21 - m12) / S;
+                    q.x = (m13 + m31) / S;
+                    q.y = (m23 + m32) / S;
+                    q.z = 0.25f * S;
+                }
                 q.Normalize();
                 return q;
             }
@@ -522,14 +546,13 @@ namespace UMath
         /// <param name="up">Up.</param>
         public static UMatrix4x4 LookAt(UVector3 eye,UVector3 target,UVector3 up)
         {
-            var w = (target-eye);
+            var w = (target - eye);
             w.Normalized();
             var u = UVector3.Cross(up, w);
             u.Normalized();
             var v = UVector3.Cross(w, u);
             v.Normalized();
             var trans = CreateTranslate(-eye);
-
             var m = new UMatrix4x4(
                         u.x, v.x, w.x, 0,
                         u.y, v.y, w.y, 0,

@@ -172,6 +172,11 @@ namespace UMath
         /// </summary>
         public void Normalize()
         {
+            if (this.Length <= MathHelper.Epsilon)
+            {
+                Xyzw = identity.Xyzw;
+                    return;
+            }
             float scale = 1.0f / this.Length;
             Xyz *= scale;
             w *= scale;
@@ -335,7 +340,7 @@ namespace UMath
             return left;
         }
         /// <param name="l">L.</param>
-        /// <param name="r">The red component.</param>
+        /// <param name="r">R.</param>
         public static UQuaternion operator *(UQuaternion l,UQuaternion r)
         {
             return new UQuaternion(

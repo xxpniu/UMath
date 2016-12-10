@@ -10,10 +10,15 @@ public class UTest : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-       
+        var lookat = UQuaternion.LookRotation(new UVector3(0, 0, -1));  
 	}
 
-
+    void Awake()
+    {
+        var lookat = UQuaternion.LookRotation(new UVector3(0, 0, -1));
+        mparent = new UTransform();
+        mtransfrom = new UTransform();
+    }
 
     [Header("Input")]
     public Vector3 inputVer = Vector3.forward;
@@ -70,8 +75,8 @@ public class UTest : MonoBehaviour {
     public UMatrix4x4 midM;
     public Matrix4x4 mid;
 
-    private UTransform mparent = new UTransform();
-    private UTransform  mtransfrom = new UTransform();
+    private UTransform mparent;//= new UTransform();
+    private UTransform  mtransfrom;// = new UTransform();
     private float rotangle =0;
 
     [Header("Transform")]
@@ -82,6 +87,7 @@ public class UTest : MonoBehaviour {
 	// Update is called once per frame
 	void Update () 
     {
+        //return;
         if (rotangle > 360)
         {
             rotangle = 0;
@@ -132,7 +138,10 @@ public class UTest : MonoBehaviour {
 
 
         mlookatMat = UMatrix4x4.LookAt(UVector3.zero, inputUv,UVector3.up);
-        lookatMat = Matrix4x4.zero;//need
+        lookatMat = Matrix4x4.TRS(
+            Vector3.zero,
+            Quaternion.LookRotation(inputVer, Vector3.up), 
+            Vector3.one);
 
         var v = this.transform.forward;
         angleY = MathHelper.CalAngleWithAxisY(new UVector3(v.x,v.y,v.z));
