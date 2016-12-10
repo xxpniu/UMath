@@ -57,14 +57,14 @@ namespace UMath
         {
             var pos = this.position;
             var rot = this.rotation;
-            var scale = this.scale;
+            //var scale = this.scale;
 
             this._parent = parent;
             if (stayWorld)
             {
                 this.position = pos;
                 this.rotation = rot;
-                this.scale = scale;
+                //this.scale = scale;
             }
 
         }
@@ -183,16 +183,12 @@ namespace UMath
         }
 
         /// <summary>
-        /// Gets or sets the scale.
+        /// Gets world scale.
         /// </summary>
         /// <value>The scale.</value>
         public UVector3 scale
         {
-            set
-            {
-                localScale = worldToLocalMatrix.Scale; 
-            }
-            get{ return UVector3.one; }
+            get{ return  (localToWorldMatrix * Matrix).Scale ; }
         }
 
         /// <summary>
