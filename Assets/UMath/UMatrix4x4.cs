@@ -52,11 +52,6 @@ namespace UMath
         {
             get
             {
-                float m11 = this[1,1], m12 = this[1,2], m13 =this[1,3], m14 = this[1,4],
-                m21 = this[2,1], m22 = this[2,2], m23 =this[2,3], m24 =this[2,4],
-                m31 = this[3,1], m32 = this[3,2], m33 = this[3,3], m34 = this[3,4],
-                m41 = this[4,1], m42 = this[4,2], m43 = this[4,3], m44 = this[4,4];
-
                 return
                     m11 * m22 * m33 * m44 - m11 * m22 * m34 * m43 + m11 * m23 * m34 * m42 - m11 * m23 * m32 * m44
                     + m11 * m24 * m32 * m43 - m11 * m24 * m33 * m42 - m12 * m23 * m34 * m41 + m12 * m23 * m31 * m44
