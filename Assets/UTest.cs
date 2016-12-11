@@ -10,12 +10,12 @@ public class UTest : MonoBehaviour {
 	// Use this for initialization
 	void Start () 
     {
-        var lookat = UQuaternion.LookRotation(new UVector3(0, 0, -1));  
+        //var lookat = UQuaternion.LookRotation(new UVector3(0, 0, -1));  
 	}
 
     void Awake()
     {
-        var lookat = UQuaternion.LookRotation(new UVector3(0, 0, -1));
+        //var lookat = UQuaternion.LookRotation(new UVector3(0, 0, -1));
         mparent = new UTransform();
         mtransfrom = new UTransform();
     }
@@ -84,6 +84,11 @@ public class UTest : MonoBehaviour {
     public Vector3 dir;
     public UVector3 pointU;
     public Vector3 point;
+
+    [Header("Determinant")]
+    public float mDeterminant;
+    public float Determinant;
+
 	// Update is called once per frame
 	void Update () 
     {
@@ -123,6 +128,10 @@ public class UTest : MonoBehaviour {
        
         m = Matrix4x4.TRS(trans, q, scale);
         mm = UMatrix4x4.TRS(t, mq, s);
+
+        Determinant = m.determinant;
+        mDeterminant = mm.Determinant;
+
         exScale = mm.Scale;
         exTrans = mm.Translate;
         exRotation = mm.Rotation;
